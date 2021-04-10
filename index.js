@@ -1,3 +1,13 @@
+// 0. import the mongoose library
+const mongoose = require("mongoose")
+
+// url of your database
+const mongoURL = "mongodb+srv://dbAdminUserJoel:dbjjgpass@cluster0.qaamb.mongodb.net/week9?retryWrites=true&w=majority";
+
+// configuration options to use when connecting to the database
+
+const connectionOptions = {useNewUrlParser: true, useUnifiedTopology: true}
+
 // import express
 const express = require("express");
 const app = express();
