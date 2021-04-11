@@ -34,7 +34,17 @@ const onHttpStart = () => {
     console.log(`Server has started and is listening on port ${HTTP_PORT}`)
 }
 
-app.listen(HTTP_PORT, onHttpStart);
+mongoose.connect(mongoURL, connectionOptions).then(
+    () => {
+        console.log("Connection success")
+        app.listen(HTTP_PORT, onHttpStart);
+    }
+).catch(
+    (err) => {
+        console.log("Error connecting to database")
+        console.log(err)
+    }
+)
    
 
 
