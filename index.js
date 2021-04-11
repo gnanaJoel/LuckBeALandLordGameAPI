@@ -5,7 +5,7 @@
 const mongoose = require("mongoose")
 
 // url of your database
-const mongoURL = "mongodb+srv://dbAdminUserJoel:dbjjgpass@cluster0.qaamb.mongodb.net/week9?retryWrites=true&w=majority";
+const mongoURL = "mongodb+srv://dbAdminUserJoel:dbjjgpass@gameitemscluster.qs7ip.mongodb.net/luck_be_a_landlord_game_database?retryWrites=true&w=majority";
 
 // configuration options to use when connecting to the database
 const connectionOptions = {useNewUrlParser: true, useUnifiedTopology: true}
@@ -15,12 +15,13 @@ const Schema = mongoose.Schema
 
 // 2. define the Game Items table
 const GameItemSchema = new Schema({
-   name:String,
-   rarity:String,
-   description:String,
-   gold_per_turn:String
+    name:String,
+    rarity:String,
+    description:String,
+    gold_per_turn:Number
 })
-const GameItem = mongoose.model("game_items_table", GameItemSchema)
+
+const GameItem = mongoose.model("game_items_table",GameItemSchema)
 
 // ----------------------------------
 // express setup
@@ -38,6 +39,77 @@ const HTTP_PORT = process.env.PORT || 8080;
 // ----------------------------------
 // Url endpoints
 // ----------------------------------
+// GET ALL
+app.get("/api/items", (req, res) => {
+    // 1. search the database for students and return them
+    GameItem.find().exec().then(
+        (gameItems) => {
+            // if(gameItems === null){
+            //     const message = {
+            //         statusCode:404,
+            //         message:"No Game Items found in database"
+            //     }
+            //     console.log(message)
+            //     res.status(404).send(message)
+            // }
+            // else {
+                console.log(gameItems)
+                res.status(200).send(gameItems)
+            // }
+        }
+    ).catch(
+        (err) => {
+            const message = {
+                statusCode:500,
+                message:"Error when getting game items from database."
+            }
+            console.log(err)
+            res.status(500).send(message)
+        }
+    )
+})
+
+// GET ONE
+app.get("/api/items/:item_name", (req,res) => {
+    // 1. Determine which stduent the user wants
+    // - by looking at the url parameters
+   
+    console.log(`Searching for: ${req.params.sid}`)
+  
+    // 2. Then you make the query to the database
+    // --  this is mongoose syntax, its not express, its not javascript
+    GameItem.findById(req.params.sid).exec()
+        .then(
+            (gameItem) => {
+                console.log(`Result from database: `)
+                console.log(gameItem)
+                if (gameItem === null) {
+                    console.log("Game Item Record not found")
+                    // ????? what are you going to send back if the record was not found
+                    const msg = {
+                        statusCode:404,
+                        msg:"Game Item Record not found"
+                    }
+                    res.status(404).send(msg)
+                }
+                else {
+                    console.log("Game Item found")
+                    res.send(gameItem)                   
+                }
+               
+            }
+        ).catch(
+            (err) => {
+                console.log(`Error`)
+                console.log(err)
+                const msg = {
+                    statusCode:500,
+                    msg:"Error when getting game items from the database"
+                }
+                res.status(500).send(msg)
+            }
+        )
+ })
 
 // ----------------------------------
 // connect to database & start server
@@ -47,11 +119,9 @@ const onHttpStart = () => {
     console.log(`Server has started and is listening on port ${HTTP_PORT}`)
 }
 
-
-
 mongoose.connect(mongoURL, connectionOptions).then(
     () => {
-        console.log("Connection success")
+        console.log("Connected successfully to the remote database")
         app.listen(HTTP_PORT, onHttpStart);
     }
 ).catch(
