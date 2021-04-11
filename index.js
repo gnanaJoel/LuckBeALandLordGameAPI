@@ -5,8 +5,19 @@ const mongoose = require("mongoose")
 const mongoURL = "mongodb+srv://dbAdminUserJoel:dbjjgpass@cluster0.qaamb.mongodb.net/week9?retryWrites=true&w=majority";
 
 // configuration options to use when connecting to the database
-
 const connectionOptions = {useNewUrlParser: true, useUnifiedTopology: true}
+
+// add your Luck Be A Landlord Game Datbase table schemas
+const Schema = mongoose.Schema
+
+// 2. define the Game Items table
+const GameItemSchema = new Schema({
+   name:String,
+   rarity:String,
+   description:String,
+   gold_per_turn:String
+})
+const GameItem = mongoose.model("game_items_table", GameItemSchema)
 
 // import express
 const express = require("express");
