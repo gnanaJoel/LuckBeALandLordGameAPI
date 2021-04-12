@@ -61,19 +61,20 @@ app.get("/api/items", (req, res) => {
         (err) => {
             const message = {
                 statusCode:500,
-                message:"Error when getting game items from database."
+                message:"Error when getting Game Items from database."
             }
             console.log(err)
+            console.log(message)
             res.status(500).send(message)
         }
     )
 })
 
-// GET ONE/View a Single Game Item
+// GET ONE/View a Single Game Item by Name
 app.get("/api/items/:item_name", (req,res) => {
     // 1. Determine which stduent the user wants
     // - by looking at the url parameters
-    console.log(`Searching for: ${req.params.item_name}`)
+    console.log(`Searching in database for the following Game Item: ${req.params.item_name}`)
   
     // 2. Then you make the query to the database
     // --  this is mongoose syntax, its not express, its not javascript
@@ -83,16 +84,16 @@ app.get("/api/items/:item_name", (req,res) => {
                 console.log(`Result from database: `)
                 console.log(gameItem)
                 if (gameItem === null) {
-                    console.log("Game Item Record not found")
+                    console.log(`Game Item Record wtih name ${req.params.item_name} not found`)
                     // ????? what are you going to send back if the record was not found
                     const message = {
                         statusCode:404,
-                        message:"Game Item Record not found"
+                        message:`Game Item Record wtih name ${req.params.item_name} not found`
                     }
                     res.status(404).send(message)
                 }
                 else {
-                    console.log("Game Item found")
+                    console.log(`Game Item ${req.params.item_name} found and exists in database!`)
                     res.status(200).send(gameItem)                   
                 }
                
@@ -103,8 +104,9 @@ app.get("/api/items/:item_name", (req,res) => {
                 console.log(err)
                 const message = {
                     statusCode:500,
-                    message:"Error when getting game items from the database"
+                    message:`Error when getting Game Item ${req.params.item_name} from the database`
                 }
+                console.log(message)
                 res.status(500).send(message)
             }
         )
@@ -122,13 +124,13 @@ app.post("/api/items", (req, res) => {
     // - mongoose
   
     GameItem.create(req.body).then(
-        (result) => {
+        (newGameItem) => {
             //javascript
-            console.log("Game Item Created successfully!")
-            console.log(result)
+            console.log(`Game Item ${req.body.name} has been Created successfully in database!`)
+            console.log(newGameItem)
             const message = {
                 statusCode:201,
-                message:"Game Item Inserted successfully!"
+                message:`Game Item ${req.body.name} has been Inserted successfully into database!`
             }
             // express
             res.status(201).send(message)
@@ -139,12 +141,48 @@ app.post("/api/items", (req, res) => {
             console.log(err)
             const message = {
                 statusCode:500,
-                message: "Error when getting game items from database."
+                message: `Error when inserting Game Item ${req.body.name} into database.`
             }
+            console.log(message)
             res.status(500).send(message)
         }
     )
  })
+
+ // DELETE a Game Item By Name
+app.delete("/api/items/:item_name", (req,res) => {
+    // 1. you need a way to retrieve which record you want to delete
+    // (item_name)
+    console.log(`Person wants to delete: ${req.params.item_name}`)
+  
+    // 3. Call the databse and make the delete
+    GameItem.findOneAndDelete({"name":req.params.item_name}).exec().then(
+        (deletedGameItem) => {
+            if (deletedGameItem === null) {
+                const message = {
+                    statusCode:404,
+                    message:`Game Item for Delete Request with name ${req.params.item_name} not found`
+                }
+                console.log(message)  
+                res.status(404).send(message)
+            }
+            else {
+                const message = {
+                    statusCode:200,
+                    message:`Game Item ${req.params.item_name} has been Deleted successfully from database!`
+                }
+                console.log(message)
+                res.status(200).send(message)
+            }
+       
+        }
+    ).catch(
+        (err) => {
+            console.log(err)  
+            res.status(500).send(`Error with deleting Game Item ${req.params.item_name} from database`) 
+        }
+    )
+})
 
 // ----------------------------------
 // CONNECT TO DATABASE AND START SERVER
