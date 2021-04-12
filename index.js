@@ -146,9 +146,8 @@ app.post("/api/items", (req, res) => {
     )
  })
 
-
 // ----------------------------------
-// connect to database & start server
+// CONNECT TO DATABASE AND START SERVER
 // ----------------------------------
 // start the server and output a message if the server started successfully
 const onHttpStart = () => {
