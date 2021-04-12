@@ -69,6 +69,47 @@ app.get("/api/items", (req, res) => {
     )
 })
 
+// GET ONE
+app.get("/api/items/:item_name", (req,res) => {
+    // 1. Determine which stduent the user wants
+    // - by looking at the url parameters
+    console.log(`Searching for: ${req.params.item_name}`)
+  
+    // 2. Then you make the query to the database
+    // --  this is mongoose syntax, its not express, its not javascript
+    GameItem.findOne({"name":req.params.item_name}).exec()
+        .then(
+            (gameItem) => {
+                console.log(`Result from database: `)
+                console.log(gameItem)
+                if (gameItem === null) {
+                    console.log("Game Item Record not found")
+                    // ????? what are you going to send back if the record was not found
+                    const message = {
+                        statusCode:404,
+                        msg:"Game Item Record not found"
+                    }
+                    res.status(404).send(message)
+                }
+                else {
+                    console.log("Game Item found")
+                    res.status(200).send(gameItem)                   
+                }
+               
+            }
+        ).catch(
+            (err) => {
+                console.log(`Error`)
+                console.log(err)
+                const message = {
+                    statusCode:500,
+                    msg:"Error when getting game items from the database"
+                }
+                res.status(500).send(message)
+            }
+        )
+ })
+
 // ----------------------------------
 // connect to database & start server
 // ----------------------------------
