@@ -161,7 +161,7 @@ app.delete("/api/items/:item_name", (req,res) => {
             if (deletedGameItem === null) {
                 const message = {
                     statusCode:404,
-                    message:`Game Item for Delete Request with name ${req.params.item_name} not found`
+                    message:`Game Item with name ${req.params.item_name} for Delete Request not found`
                 }
                 console.log(message)  
                 res.status(404).send(message)
@@ -178,10 +178,26 @@ app.delete("/api/items/:item_name", (req,res) => {
         }
     ).catch(
         (err) => {
-            console.log(err)  
-            res.status(500).send(`Error with deleting Game Item ${req.params.item_name} from database`) 
+            console.log(`Error`)
+            console.log(err)
+            const message = {
+                statusCode:500,
+                message: `Error with deleting Game Item ${req.params.item_name} from database`
+            }
+            console.log(message)
+            res.status(500).send(message)
         }
     )
+})
+
+// PUT/Update a Game Item By ID
+app.put("/api/items/:item_id", (req,res) => {
+    const message = {
+        statusCode:501,
+        message: "Sorry! This API Endpoint has not been implemented yet. Please check back in the future as it will be available in a future update!"
+    }
+    console.log(message)
+    res.status(501).send(message)
 })
 
 // ----------------------------------
@@ -189,20 +205,17 @@ app.delete("/api/items/:item_name", (req,res) => {
 // ----------------------------------
 // start the server and output a message if the server started successfully
 const onHttpStart = () => {
-    console.log(`Server has started and is listening on port ${HTTP_PORT}`)
+    console.log(`Express Server has started and is listening on port ${HTTP_PORT}`)
 }
 
 mongoose.connect(mongoURL, connectionOptions).then(
     () => {
-        console.log("Connected successfully to the remote database")
+        console.log("Connected successfully to remote database")
         app.listen(HTTP_PORT, onHttpStart);
     }
 ).catch(
     (err) => {
-        console.log("Error connecting to database")
+        console.log("Error with connecting to remote database")
         console.log(err)
     }
 )
-   
-
-
