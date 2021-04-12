@@ -39,7 +39,7 @@ const HTTP_PORT = process.env.PORT || 8080;
 // ----------------------------------
 // Url endpoints
 // ----------------------------------
-// GET ALL
+// GET All/View List of Game Items
 app.get("/api/items", (req, res) => {
     // 1. search the database for students and return them
     GameItem.find().exec().then(
@@ -69,7 +69,7 @@ app.get("/api/items", (req, res) => {
     )
 })
 
-// GET ONE
+// GET ONE/View a Single Game Item
 app.get("/api/items/:item_name", (req,res) => {
     // 1. Determine which stduent the user wants
     // - by looking at the url parameters
