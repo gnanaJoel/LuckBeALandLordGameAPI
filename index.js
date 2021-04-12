@@ -18,7 +18,7 @@ const GameItemSchema = new Schema({
     name:String,
     rarity:String,
     description:String,
-    gold_per_turn:String
+    "gold per turn":String
 })
 
 const GameItem = mongoose.model("GameItem", GameItemSchema, "game_items_table")
@@ -87,7 +87,7 @@ app.get("/api/items/:item_name", (req,res) => {
                     // ????? what are you going to send back if the record was not found
                     const message = {
                         statusCode:404,
-                        msg:"Game Item Record not found"
+                        message:"Game Item Record not found"
                     }
                     res.status(404).send(message)
                 }
@@ -103,12 +103,49 @@ app.get("/api/items/:item_name", (req,res) => {
                 console.log(err)
                 const message = {
                     statusCode:500,
-                    msg:"Error when getting game items from the database"
+                    message:"Error when getting game items from the database"
                 }
                 res.status(500).send(message)
             }
         )
  })
+
+ // INSERT/Add a New Game Item
+app.post("/api/items", (req, res) => {
+ 
+    // 1. what did the client send us
+    // - what data does the client want us insert into the database
+    console.log("I received this from the client:")
+    console.log(req.body)
+   
+    // 2. Take that information and CREATE someone in your database!
+    // - mongoose
+  
+    GameItem.create(req.body).then(
+        (result) => {
+            //javascript
+            console.log("Game Item Created successfully!")
+            console.log(result)
+            const message = {
+                statusCode:201,
+                message:"Game Item Inserted successfully!"
+            }
+            // express
+            res.status(201).send(message)
+        }
+    ).catch(
+        (err) => {
+            console.log(`Error`)
+            console.log(err)
+            const message = {
+                statusCode:500,
+                message: "Error when getting game items from database."
+            }
+            res.status(500).send(message)
+        }
+    )
+ })
+
 
 // ----------------------------------
 // connect to database & start server
