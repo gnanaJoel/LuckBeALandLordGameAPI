@@ -15,8 +15,8 @@ const Schema = mongoose.Schema
 
 // 2. define the Game Items table
 const GameItemSchema = new Schema({
-    name:String,
-    rarity:String,
+    name:{type:String, required:true},
+    rarity:{type:String,required:true},
     description:String,
     "gold per turn":String
 })
@@ -32,6 +32,7 @@ const app = express();
 
 // configure express to accept data from the client as JSON format
 app.use(express.json())
+   
 
 // specify the port that your server will run on
 const HTTP_PORT = process.env.PORT || 8080;
@@ -190,6 +191,9 @@ app.delete("/api/items/:item_name", (req,res) => {
     )
 })
 
+// ----------------------------------
+// Future Url endpoints
+// ----------------------------------
 // PUT/Update a Game Item By ID
 app.put("/api/items/:item_id", (req,res) => {
     const message = {
@@ -199,6 +203,17 @@ app.put("/api/items/:item_id", (req,res) => {
     console.log(message)
     res.status(501).send(message)
 })
+
+// ----------------------------------
+// Other Url endpoints
+// ----------------------------------
+// 404/Not Found Error Code Handling for Other Endpoints
+app.use((req, res, next) => {
+    const message = {
+        statusCode:404,
+        message: "Requested Web Page not found"
+    }
+    res.status(404).send(message)});
 
 // ----------------------------------
 // CONNECT TO DATABASE AND START SERVER
