@@ -1,3 +1,3 @@
 # LuckBeALandlordGameAPI
-# Developer: Joel Gnanasekaram
-# Software: Node.JS, Express, MongoDB, Heroku
+## Developer: Joel Gnanasekaram
+## Software: Node.JS, Express, MongoDB, Heroku
